@@ -211,6 +211,9 @@ function Address(props) {
               BTC
             </p>
 
+            <p>Earning: {Math.round(parseFloat(profileInfo.earning_fee) * 1000) / 1000}{" "}
+              BTC </p>
+
             <p>Holders: {profileInfo.holders}</p>
 
             <p>Holding: {profileInfo.holding}</p>
