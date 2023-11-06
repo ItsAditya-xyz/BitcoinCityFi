@@ -13,6 +13,7 @@ function Address(props) {
   const [chartData, setChartData] = useState(null);
   const [chartOptions, setChartOptions] = useState(null);
   const [profileInfo, setProfileInfo] = useState({});
+  const [usernameInfo, setUsernameInfo] = useState({});
 
   const [twitterUsername, setTwitterUsername] = useState("");
 
@@ -93,6 +94,13 @@ function Address(props) {
     const profileData = await profileResponse.json();
     const profileInfoVar = profileData.result;
     setTwitterUsername(profileInfoVar.twitter_username);
+
+    const usernameSearch = `https://alpha-api.newbitcoincity.com/api/player-share/tokensv1?network=nos&page=1&limit=30&key_type=1&side=1&followers=0,200000&price_usd=0,1000&sort_col=created_at&sort_type=0&holder=0&placeholder=0&price=0,1000&search=${profileInfoVar.twitter_username}`;
+    const usernameResponse = await fetch(usernameSearch);
+    const usernameData = await usernameResponse.json();
+    const usernameInfoVar = usernameData.result[0];
+    console.log(usernameInfoVar);
+    setUsernameInfo(usernameInfoVar);
     setProfileInfo(profileInfoVar);
     setLoading(false);
   }
@@ -155,27 +163,74 @@ function Address(props) {
             </button>
           </div>
 
-        <div className="my-4 flex justify-center">
-          <a
-            className="profileInfo my-4"
-            href={`https://twitter.com/${profileInfo.twitter_username}`}
-          >
-            <div className="flex justify-center items-center space-x-2">
-              <img
-                src={profileInfo.twitter_avatar}
-                className="rounded-full w-15 h-15 text-gray-800"
-              />
-              <div className="flex flex-col justify-center">
-                <p className="font-bold">{profileInfo.twitter_name}</p>
-                <p className="text-md font-semibold text-gray-700">
-                  @{profileInfo.twitter_username}
-                </p>
+          <div className="my-4 flex justify-center">
+            <a
+              className="profileInfo my-4"
+              href={`https://twitter.com/${profileInfo.twitter_username}`}
+            >
+              <div className="flex justify-center items-center space-x-2">
+                <img
+                  src={profileInfo.twitter_avatar}
+                  className="rounded-full w-15 h-15 text-gray-800"
+                />
+                <div className="flex flex-col justify-center">
+                  <p className="font-bold">{profileInfo.twitter_name}</p>
+                  <p className="text-md font-semibold text-gray-700">
+                    @{profileInfo.twitter_username}
+                  </p>
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
           </div>
           <div className="w-full">
             <Line data={chartData} />
+          </div>
+
+          <div className=" my-4  mx-16 ">
+            <p className="">
+              Key Price: $
+              {Math.round(parseFloat(usernameInfo.usd_price) * 100) / 100}
+            </p>
+
+            <p className="">
+              Key Supply:{" "}
+              {Math.round(usernameInfo.total_supply_number * 10) / 10}
+            </p>
+            <p className="">
+              Joined:{" "}
+              {new Date(usernameInfo.created_at).toLocaleString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </p>
+
+            <p>
+              Volume:{" "}
+              {Math.round(parseFloat(usernameInfo.total_volume) * 1000) / 1000}{" "}
+              BTC
+            </p>
+
+            <p>Holders: {profileInfo.holders}</p>
+
+            <p>Holding: {profileInfo.holding}</p>
+
+            <p>Chat Entry: {profileInfo.min_holding_requirement} Key</p>
+
+            <p>Self Keys: {profileInfo.own_keys}</p>
+          </div>
+
+          <div className="footer text-xl my-4 flex justify-center">
+            Made with ❤️ by {"   "}{" "}
+            <span className="font-bold ml-1">
+              <a
+                href="https://twitter.com/itsaditya_xyz"
+                target="_blank"
+                className="text-blue-500"
+              >
+                Aditya Chaudhary
+              </a>
+            </span>
           </div>
         </div>
       )}
