@@ -217,7 +217,7 @@ function Address(props) {
 
             <p>Chat Entry: {profileInfo.min_holding_requirement} Key</p>
 
-            <p>Self Keys: {profileInfo.own_keys}</p>
+            <p>Self Keys: {Math.round(parseFloat(profileInfo.own_keys)*10)/10}</p>
           </div>
 
           <div className="footer text-xl my-4 flex justify-center">
