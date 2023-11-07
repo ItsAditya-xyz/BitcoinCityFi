@@ -434,10 +434,10 @@ function Landing(props) {
                             />
                             <div className="flex flex-col justify-center">
                               <p className="font-bold">
-                                {topPoints[key].twitterUsername}
+                                {topPoints[key].twitterName}
                               </p>
                               <p className="text-md font-semibold text-gray-700">
-                                {topPoints[key].twitterName}
+                                {topPoints[key].twitterUsername}
                               </p>
                             </div>
                           </div>
