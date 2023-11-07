@@ -146,29 +146,34 @@ function Address(props) {
 
       {!loading && (
         <div className="">
-          <div className="flex justify-center items-center space-x-2 my-4">
+          <a href="/" className="text-2xl font-bold text-gray-700 mx-4 my-5">
+            BitcoinCityFi
+          </a>
+          <div className="flex justify-center items-center space-x-1 mx-1 mt-2">
             <input
               type="text"
+              placeholder={`Enter twitter handle`}
               value={twitterUsername}
               onChange={(e) => setTwitterUsername(e.target.value)}
-              placeholder="Enter Twitter Username"
-              className="text-center text-gray-800 text-xl border-2 border-gray-200 rounded-md p-2 w-3/4 sm:w-1/2 outline-none"
+              className="bg-gray-700 hover:bg-gray-800 text-white  py-3 w-3/4 sm:w-2/5 px-3 rounded-md shadow-inner  outline-none"
             />
 
             <button
-              className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600"
-              onClick={handleSearch}
+              className="bg-gray-700 hover:bg-gray-800 text-white  py-3  px-8 rounded-md shadow-md"
+              onClick={() => {
+                handleSearch();
+              }}
             >
               Search
             </button>
           </div>
 
           <div className="my-4 flex justify-center">
-            <a
-              className="profileInfo my-4"
-              href={`https://twitter.com/${profileInfo.twitter_username}`}
-            >
-              <div className="flex justify-center items-center space-x-2">
+            <div className="profileInfo my-4">
+              <a
+                className="flex justify-center items-center space-x-2"
+                href={`https://twitter.com/${profileInfo.twitter_username}`}
+              >
                 <img
                   src={profileInfo.twitter_avatar}
                   className="rounded-full w-15 h-15 text-gray-800"
@@ -179,48 +184,69 @@ function Address(props) {
                     @{profileInfo.twitter_username}
                   </p>
                 </div>
+              </a>
+
+              {/* <div className="sm:w-3/4 mx-auto my-4 flex flex-auto flex-wrap space-x-8 space-y-1 sm:space-y-2"> */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4">
+                <p className="">
+                  <span className="font-semibold">Key Price</span>: $
+                  {Math.round(parseFloat(usernameInfo.usd_price) * 100) / 100}
+                </p>
+
+                <p className="">
+                  <span className="font-semibold">Key Supply</span> :{" "}
+                  {Math.round(usernameInfo.total_supply_number * 10) / 10}
+                </p>
+                <p className="">
+                  <span className="font-semibold">Joined</span>:{" "}
+                  {new Date(usernameInfo.created_at).toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+
+                <p>
+                  <span className="font-semibold">Volume</span>:{" "}
+                  {Math.round(parseFloat(usernameInfo.total_volume) * 1000) /
+                    1000}{" "}
+                  BTC
+                </p>
+
+                <p>
+                  <span className="font-semibold">Earning</span>:{" "}
+                  {Math.round(parseFloat(profileInfo.earning_fee) * 10000) /
+                    10000}{" "}
+                  BTC{" "}
+                </p>
+
+                <p>
+                  {" "}
+                  <span className="font-semibold">Holders</span>:{" "}
+                  {profileInfo.holders}
+                </p>
+
+                <p>
+                  {" "}
+                  <span className="font-semibold">Holding</span>:{" "}
+                  {profileInfo.holding}
+                </p>
+
+                <p>
+                  {" "}
+                  <span className="font-semibold">Chat Entry</span>:{" "}
+                  {profileInfo.min_holding_requirement} Key
+                </p>
+
+                <p>
+                  <span className="font-semibold">Self Keys</span>:{" "}
+                  {Math.round(parseFloat(profileInfo.own_keys) * 10) / 10}
+                </p>
               </div>
-            </a>
+            </div>
           </div>
-          <div className="w-full">
+          <div className="sm:w-3/4 mx-auto ">
             <Line data={chartData} />
-          </div>
-
-          <div className=" my-4  mx-16 ">
-            <p className="">
-              Key Price: $
-              {Math.round(parseFloat(usernameInfo.usd_price) * 100) / 100}
-            </p>
-
-            <p className="">
-              Key Supply:{" "}
-              {Math.round(usernameInfo.total_supply_number * 10) / 10}
-            </p>
-            <p className="">
-              Joined:{" "}
-              {new Date(usernameInfo.created_at).toLocaleString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}
-            </p>
-
-            <p>
-              Volume:{" "}
-              {Math.round(parseFloat(usernameInfo.total_volume) * 1000) / 1000}{" "}
-              BTC
-            </p>
-
-            <p>Earning: {Math.round(parseFloat(profileInfo.earning_fee) * 1000) / 1000}{" "}
-              BTC </p>
-
-            <p>Holders: {profileInfo.holders}</p>
-
-            <p>Holding: {profileInfo.holding}</p>
-
-            <p>Chat Entry: {profileInfo.min_holding_requirement} Key</p>
-
-            <p>Self Keys: {Math.round(parseFloat(profileInfo.own_keys)*10)/10}</p>
           </div>
 
           <div className="footer text-xl my-4 flex justify-center">
