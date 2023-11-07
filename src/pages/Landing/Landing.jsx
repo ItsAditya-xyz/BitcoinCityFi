@@ -127,18 +127,19 @@ function Landing(props) {
               <table className=" bg-white border border-gray-300 min-w-full overflow-x-auto">
                 <thead>
                   <tr>
-                    <th className="py-2  border-b text-left">Rank</th>
-                    <th className="py-2  border-b text-left">Account</th>
-                    <th className="py-2  border-b text-left">Price</th>
-                    <th className="py-2  border-b text-left">Volume</th>
-                    <th className="py-2  border-b text-left">X Followers</th>
-                    <th className="py-2  border-b text-left">Last Seen</th>
+                    <th className="py-2 px-2 border-b text-left">Rank</th>
+                    <th className="py-2 px-2 border-b text-left">Account</th>
+                    <th className="py-2 px-2 border-b text-left">Price</th>
+                    <th className="py-2  px-2 border-b text-left">Volume</th>
+                    <th className="py-2 px-2 border-b text-left">Supply</th>
+                    <th className="py-2 px-2 border-b text-left">X Followers</th>
+                    <th className="py-2 px-2 border-b text-left">Last Seen</th>
                   </tr>
                 </thead>
                 <tbody className="">
                   {topKeys.map((key, index) => (
                     <tr key={index}>
-                      <td className="py-2  border-b border-gray-300">
+                      <td className="py-2 px-2 border-b border-gray-300">
                         <div className="flex items-center">
                           <div className="mr-2">
                             <p className="text-sm font-medium text-gray-900">
@@ -147,7 +148,7 @@ function Landing(props) {
                           </div>
                         </div>
                       </td>
-                      <td className="py-2  border-b border-gray-300">
+                      <td className="py-2 px-2  border-b border-gray-300">
                         <a
                           className="flex items-center space-x-2 my-4"
                           href={`/address/${key.owner}`}
@@ -168,12 +169,12 @@ function Landing(props) {
                           </div>
                         </a>
                       </td>
-                      <td className="py-2  border-b border-gray-300">
+                      <td className="py-2 px-2  border-b border-gray-300">
                         <p className="text-sm font-medium text-gray-900">
                           ${Math.round(parseFloat(key.usd_price) * 10) / 10}
                         </p>
                       </td>
-                      <td className="py-2  border-b border-gray-300">
+                      <td className="py-2 px-2  border-b border-gray-300">
                         <p className="text-sm font-medium text-gray-900">
                           {Math.round(parseFloat(key.total_volume) * 1000) /
                             1000}{" "}
@@ -181,11 +182,18 @@ function Landing(props) {
                         </p>
                       </td>
 
-                      <td className="py-2  border-b border-gray-300">
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        <p className="text-sm font-medium text-gray-900">
+                          {Math.round(parseFloat(key.total_supply_number) * 10) /
+                            10}{" "}
+                        </p>
+                      </td>
+
+                      <td className="py-2 px-2  border-b border-gray-300">
                         {key.twitter_followers_count}
                       </td>
 
-                      <td className="py-2 border-b border-gray-300">
+                      <td className="py-2 px-2 border-b border-gray-300">
                         {new Date(key.latest_online).toLocaleString(
                           "en-US",
                           {}
