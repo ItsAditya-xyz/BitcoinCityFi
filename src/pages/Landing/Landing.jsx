@@ -159,10 +159,10 @@ function Landing(props) {
                             />
                             <div className="flex flex-col justify-center">
                               <p className="font-bold">
-                                {key.user_twitter_username}
+                                {key.user_twitter_name}
                               </p>
                               <p className="text-md font-semibold text-gray-700">
-                                {key.user_twitter_name}
+                                {key.user_twitter_username}
                               </p>
                             </div>
                           </div>
