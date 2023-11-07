@@ -16,16 +16,22 @@ function Landing(props) {
   }
 
   async function handleSearch() {
-    const url = `https://alpha-api.newbitcoincity.com/api/player-share/tokensv1?network=nos&page=1&limit=30&key_type=1&side=1&followers=0,200000&price_usd=0,1000&sort_col=created_at&sort_type=0&holder=0&placeholder=0&price=0,1000&search=${username}`;
+    letFinalUsername = username;
+
     if (!username) {
-      toast.error("Please enter a valid twitter username");
+      toast.error("Please enter a valid twitter username.");
       return;
     }
     //check if it starts with @ or has space
-    if (username.startsWith("@") || username.includes(" ")) {
-      toast.error("Please enter a valid twitter username");
+    if (username.includes(" ")) {
+      toast.error("Username cannot have space");
       return;
     }
+    if (username.startsWith("@")) {
+      letFinalUsername = username.substring(1);
+    }
+
+    const url = `https://alpha-api.newbitcoincity.com/api/player-share/tokensv1?network=nos&page=1&limit=30&key_type=1&side=1&followers=0,200000&price_usd=0,1000&sort_col=created_at&sort_type=0&holder=0&placeholder=0&price=0,1000&search=${letFinalUsername}`;
 
     const loadingToast = toast.loading("Searching...");
     try {
@@ -38,7 +44,7 @@ function Landing(props) {
     } catch {
       toast.dismiss(loadingToast);
       toast.error(
-        "Twitter profile not found. Make sure twitter username is correct!"
+        "Twitter profile not found on NBC!"
       );
     }
   }
@@ -118,11 +124,12 @@ function Landing(props) {
       {!isLoading && (
         <div>
           <div>
-            <div className=""
-            style={{
+            <div
+              className=""
+              style={{
                 maxWidth: "100%",
                 overflowX: "auto",
-            }}
+              }}
             >
               <table className=" bg-white border border-gray-300 min-w-full overflow-x-auto ">
                 <thead>
@@ -132,7 +139,9 @@ function Landing(props) {
                     <th className="py-2 px-2 border-b text-left">Price</th>
                     <th className="py-2  px-2 border-b text-left">Volume</th>
                     <th className="py-2 px-2 border-b text-left">Supply</th>
-                    <th className="py-2 px-2 border-b text-left">X Followers</th>
+                    <th className="py-2 px-2 border-b text-left">
+                      X Followers
+                    </th>
                     <th className="py-2 px-2 border-b text-left">Last Seen</th>
                   </tr>
                 </thead>
@@ -184,8 +193,9 @@ function Landing(props) {
 
                       <td className="py-2 px-2  border-b border-gray-300">
                         <p className="text-sm font-medium text-gray-900">
-                          {Math.round(parseFloat(key.total_supply_number) * 10) /
-                            10}{" "}
+                          {Math.round(
+                            parseFloat(key.total_supply_number) * 10
+                          ) / 10}{" "}
                         </p>
                       </td>
 
