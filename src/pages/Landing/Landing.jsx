@@ -6,11 +6,13 @@ function Landing(props) {
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [topPortfolio, setTopPortfolio] = useState([]);
+  const [topPoints, setTopPoints] = useState({});
   const [currentTab, setCurrentTab] = useState("keys");
 
   async function getTopKeys() {
     if (topKeys.length > 0) return;
     const url = `https://api.newbitcoincity.com/api/nbc-keys/tokens?network=nos&page=1&limit=500&key_type=1&followers=0,200000&portfolio=1&sort_col=buy_price&sort_type=0`;
+
     const response = await fetch(url);
     const data = await response.json();
     const topKeysVar = data.result;
@@ -19,12 +21,21 @@ function Landing(props) {
   }
 
   async function getTopPortfolios() {
-    if(topPortfolio.length > 0) return;
+    if (topPortfolio.length > 0) return;
     const url2 = `https://alpha-api.newbitcoincity.com/api/player-share/tokens?network=nos&page=1&limit=30&key_type=1&side=1&followers=0,200000&price_usd=0,1000&sort_col=portfolio&sort_type=0&address=0x26B131763413838375B4B6Adb149c59E43CD4445&holder=0&placeholder=0&price=0,1000&search=&portfolio=1`;
     const response2 = await fetch(url2);
     const data2 = await response2.json();
     const topPortfoliosVar = data2.result;
     setTopPortfolio(topPortfoliosVar);
+  }
+
+  async function getTopPoints() {
+    if (Object.keys(topPoints).length > 0) return;
+    const url3 = "https://itsaditya.live/api/nbc/leaderboard?limit=500";
+    const response3 = await fetch(url3);
+    const data3 = await response3.json();
+    const topPointsVar = data3.result;
+    setTopPoints(topPointsVar);
   }
 
   async function handleSearch() {
@@ -157,6 +168,19 @@ function Landing(props) {
               }}
             >
               Sort by Portfolio
+            </button>
+
+            <button
+              className={`outline-none px-3  py-3 ${
+                currentTab === "points" &&
+                "border-b-4 px-3 border-orange-300 py-3"
+              }}`}
+              onClick={() => {
+                setCurrentTab("points");
+                getTopPoints();
+              }}
+            >
+              Sort by Points
             </button>
           </div>
         </div>
@@ -343,6 +367,135 @@ function Landing(props) {
                           "en-US",
                           {}
                         )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!isLoading && currentTab === "points" && (
+        <div>
+          <div>
+            <div
+              className=""
+              style={{
+                maxWidth: "100%",
+                overflowX: "auto",
+              }}
+            >
+              <table className=" bg-white border border-gray-300 min-w-full overflow-x-auto ">
+                <thead>
+                  <tr>
+                    <th className="py-2  px-2 border-b text-left">Rank</th>
+                    <th className="py-2  px-2 border-b text-left">Account</th>
+                    <th className="py-2 px-2 border-b text-left">Points</th>
+                    <th className="py-2  px-2 border-b text-left">
+                      Point (24h)
+                    </th>
+
+                    <th className="py-2  px-2 border-b text-left ">
+                      Point from Post (24h)
+                    </th>
+
+                    <th className="py-2  px-2 border-b text-left">
+                      Point from Volume (24h)
+                    </th>
+
+                    <th className="py-2  px-2 border-b text-left">
+                      Point from Trade (24h)
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="">
+                  {Object.keys(topPoints).map((key, index) => (
+                    <tr key={key}>
+                      <td className="py-2 px-2 border-b border-gray-300">
+                        <div className="flex items-center">
+                          <div className="mr-2">
+                            <p className="text-sm font-medium text-gray-900">
+                              {index + 1}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        <a
+                          className="flex items-center space-x-2 my-4"
+                          href={`/address/${topPoints[key].address}`}
+                        >
+                          <div className="flex justify-center items-center space-x-2">
+                            <img
+                              src={topPoints[key].twitterPfp}
+                              className="rounded-full w-15 h-15 text-gray-800"
+                            />
+                            <div className="flex flex-col justify-center">
+                              <p className="font-bold">
+                                {topPoints[key].twitterUsername}
+                              </p>
+                              <p className="text-md font-semibold text-gray-700">
+                                {topPoints[key].twitterName}
+                              </p>
+                            </div>
+                          </div>
+                        </a>
+                      </td>
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        <p className="text-sm font-medium text-gray-900">
+                          {parseFloat(
+                            topPoints[key].totalPoints
+                          ).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </p>
+                      </td>
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        <p className="text-sm font-medium text-gray-900">
+                          {parseFloat(topPoints[key].pointIn24H).toLocaleString(
+                            undefined,
+                            {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            }
+                          )}
+                        </p>
+                      </td>
+
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        <p className="text-sm font-medium text-gray-900">
+                          {parseFloat(
+                            topPoints[key].pointFromPost
+                          ).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </p>
+                      </td>
+
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        <p className="text-sm font-medium text-gray-900">
+                          {parseFloat(
+                            topPoints[key].pointFromVol
+                          ).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </p>
+                      </td>
+
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        <p className="text-sm font-medium text-gray-900">
+                          {parseFloat(
+                            topPoints[key].pointFromTrade
+                          ).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </p>
                       </td>
                     </tr>
                   ))}
