@@ -5,9 +5,12 @@ function Landing(props) {
   const [topKeys, setTopKeys] = useState([]);
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [topPortfolio, setTopPortfolio] = useState([]);
+  const [currentTab, setCurrentTab] = useState("keys");
 
   async function getTopKeys() {
-    const url = `https://api.newbitcoincity.com/api/nbc-keys/tokens?network=nos&page=1&limit=500&key_type=1&followers=0,200000&sort_col=buy_price&sort_type=0`;
+    if (topKeys.length > 0) return;
+    const url = `https://api.newbitcoincity.com/api/nbc-keys/tokens?network=nos&page=1&limit=500&key_type=1&followers=0,200000&portfolio=1&sort_col=buy_price&sort_type=0`;
     const response = await fetch(url);
     const data = await response.json();
     const topKeysVar = data.result;
@@ -15,8 +18,17 @@ function Landing(props) {
     setIsLoading(false);
   }
 
+  async function getTopPortfolios() {
+    if(topPortfolio.length > 0) return;
+    const url2 = `https://alpha-api.newbitcoincity.com/api/player-share/tokens?network=nos&page=1&limit=30&key_type=1&side=1&followers=0,200000&price_usd=0,1000&sort_col=portfolio&sort_type=0&address=0x26B131763413838375B4B6Adb149c59E43CD4445&holder=0&placeholder=0&price=0,1000&search=&portfolio=1`;
+    const response2 = await fetch(url2);
+    const data2 = await response2.json();
+    const topPortfoliosVar = data2.result;
+    setTopPortfolio(topPortfoliosVar);
+  }
+
   async function handleSearch() {
-    letFinalUsername = username;
+    let letFinalUsername = username;
 
     if (!username) {
       toast.error("Please enter a valid twitter username.");
@@ -43,9 +55,7 @@ function Landing(props) {
       window.location.href = `/address/${userAddress}`;
     } catch {
       toast.dismiss(loadingToast);
-      toast.error(
-        "Twitter profile not found on NBC!"
-      );
+      toast.error("Twitter profile not found on NBC!");
     }
   }
 
@@ -120,8 +130,38 @@ function Landing(props) {
           <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       )}
-
       {!isLoading && (
+        <div className="flex justify-center items-center my-4">
+          {/* have a dropdown that has sort by Keys and sort by Portfolio */}
+          <div className="flex justify-center items-center space-x-4">
+            <button
+              className={`outline-none px-3  py-3 ${
+                currentTab === "keys" &&
+                "border-b-4 px-3 border-orange-300 py-3"
+              }}`}
+              onClick={() => {
+                setCurrentTab("keys");
+                getTopKeys();
+              }}
+            >
+              Sort by Keys
+            </button>
+            <button
+              className={`outline-none px-3  py-3 ${
+                currentTab === "portfolio" &&
+                "border-b-4 px-3 border-orange-300 py-3"
+              }}`}
+              onClick={() => {
+                setCurrentTab("portfolio");
+                getTopPortfolios();
+              }}
+            >
+              Sort by Portfolio
+            </button>
+          </div>
+        </div>
+      )}
+      {!isLoading && currentTab === "keys" && (
         <div>
           <div>
             <div
@@ -188,6 +228,101 @@ function Landing(props) {
                           {Math.round(parseFloat(key.total_volume) * 1000) /
                             1000}{" "}
                           BTC
+                        </p>
+                      </td>
+
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        <p className="text-sm font-medium text-gray-900">
+                          {Math.round(
+                            parseFloat(key.total_supply_number) * 10
+                          ) / 10}{" "}
+                        </p>
+                      </td>
+
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        {key.twitter_followers_count}
+                      </td>
+
+                      <td className="py-2 px-2 border-b border-gray-300">
+                        {new Date(key.latest_online).toLocaleString(
+                          "en-US",
+                          {}
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!isLoading && currentTab === "portfolio" && (
+        <div>
+          <div>
+            <div
+              className=""
+              style={{
+                maxWidth: "100%",
+                overflowX: "auto",
+              }}
+            >
+              <table className=" bg-white border border-gray-300 min-w-full overflow-x-auto ">
+                <thead>
+                  <tr>
+                    <th className="py-2 px-2 border-b text-left">Rank</th>
+                    <th className="py-2 px-2 border-b text-left">Account</th>
+                    <th className="py-2 px-2 border-b text-left">Price</th>
+                    <th className="py-2  px-2 border-b text-left">Portfolio</th>
+                    <th className="py-2 px-2 border-b text-left">Supply</th>
+                    <th className="py-2 px-2 border-b text-left">
+                      X Followers
+                    </th>
+                    <th className="py-2 px-2 border-b text-left">Last Seen</th>
+                  </tr>
+                </thead>
+                <tbody className="">
+                  {topPortfolio.map((key, index) => (
+                    <tr key={index}>
+                      <td className="py-2 px-2 border-b border-gray-300">
+                        <div className="flex items-center">
+                          <div className="mr-2">
+                            <p className="text-sm font-medium text-gray-900">
+                              {index + 1}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        <a
+                          className="flex items-center space-x-2 my-4"
+                          href={`/address/${key.owner}`}
+                        >
+                          <div className="flex justify-center items-center space-x-2">
+                            <img
+                              src={key.user_twitter_avatar}
+                              className="rounded-full w-15 h-15 text-gray-800"
+                            />
+                            <div className="flex flex-col justify-center">
+                              <p className="font-bold">
+                                {key.user_twitter_name}
+                              </p>
+                              <p className="text-md font-semibold text-gray-700">
+                                {key.user_twitter_username}
+                              </p>
+                            </div>
+                          </div>
+                        </a>
+                      </td>
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        <p className="text-sm font-medium text-gray-900">
+                          ${Math.round(parseFloat(key.usd_price) * 10) / 10}
+                        </p>
+                      </td>
+                      <td className="py-2 px-2  border-b border-gray-300">
+                        <p className="text-sm font-medium text-gray-900">
+                          {Math.round(key.portfolio * 1000) / 1000} BTC
                         </p>
                       </td>
 
