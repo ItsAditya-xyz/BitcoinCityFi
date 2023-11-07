@@ -82,30 +82,31 @@ function Landing(props) {
         </div>
 
         <div className="footer text-xl mt-4 flex justify-center text-white">
-            Made with ❤️ by {"   "}{" "}
-            <span className="font-bold ml-1">
-              <a
-                href="https://twitter.com/itsaditya_xyz"
-                target="_blank"
-                className="text-red-200"
-              >
-                Aditya Chaudhary
-              </a>
-            </span>
-            </div>
+          Made with ❤️ by {"   "}{" "}
+          <span className="font-bold ml-1">
+            <a
+              href="https://twitter.com/itsaditya_xyz"
+              target="_blank"
+              className="text-red-200"
+            >
+              Aditya Chaudhary
+            </a>
+          </span>
+        </div>
 
-            <div className="footer text-sm py-2 sm:py-0 flex justify-center text-white">
-           Join  <span className="font-bold mx-1">
-              <a
-                href="https://discord.gg/wuTybbZBd5"
-                target="_blank"
-                className="text-blue-800"
-              >
-                discord
-              </a>
-            </span> to access wallet tracking and key alerts {"   "}{" "}
-           
-            </div>
+        <div className="footer text-sm py-2 sm:py-0 flex justify-center text-white">
+          Join{" "}
+          <span className="font-bold mx-1">
+            <a
+              href="https://discord.gg/wuTybbZBd5"
+              target="_blank"
+              className="text-blue-800"
+            >
+              discord
+            </a>
+          </span>{" "}
+          to access wallet tracking and key alerts {"   "}{" "}
+        </div>
       </div>
 
       {isLoading && (
@@ -117,8 +118,13 @@ function Landing(props) {
       {!isLoading && (
         <div>
           <div>
-            <div className="w-full mx-auto">
-              <table className=" bg-white border border-gray-300 min-w-full">
+            <div className=""
+            style={{
+                maxWidth: "100%",
+                overflowX: "auto",
+            }}
+            >
+              <table className=" bg-white border border-gray-300 min-w-full overflow-x-auto">
                 <thead>
                   <tr>
                     <th className="py-2  border-b text-left">Rank</th>
@@ -126,9 +132,10 @@ function Landing(props) {
                     <th className="py-2  border-b text-left">Price</th>
                     <th className="py-2  border-b text-left">Volume</th>
                     <th className="py-2  border-b text-left">X Followers</th>
+                    <th className="py-2  border-b text-left">Last Seen</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="">
                   {topKeys.map((key, index) => (
                     <tr key={index}>
                       <td className="py-2  border-b border-gray-300">
@@ -141,8 +148,9 @@ function Landing(props) {
                         </div>
                       </td>
                       <td className="py-2  border-b border-gray-300">
-                        <a className="flex items-center space-x-2 my-4"
-                        href={`/address/${key.owner}`}
+                        <a
+                          className="flex items-center space-x-2 my-4"
+                          href={`/address/${key.owner}`}
                         >
                           <div className="flex justify-center items-center space-x-2">
                             <img
@@ -167,21 +175,28 @@ function Landing(props) {
                       </td>
                       <td className="py-2  border-b border-gray-300">
                         <p className="text-sm font-medium text-gray-900">
-                          {Math.round(parseFloat(key.total_volume) * 1000) / 1000} BTC
+                          {Math.round(parseFloat(key.total_volume) * 1000) /
+                            1000}{" "}
+                          BTC
                         </p>
                       </td>
 
-                        <td className="py-2  border-b border-gray-300">
-                            {key.twitter_followers_count}
-                            </td>
+                      <td className="py-2  border-b border-gray-300">
+                        {key.twitter_followers_count}
+                      </td>
 
+                      <td className="py-2 border-b border-gray-300">
+                        {new Date(key.latest_online).toLocaleString(
+                          "en-US",
+                          {}
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           </div>
-        
         </div>
       )}
     </div>
