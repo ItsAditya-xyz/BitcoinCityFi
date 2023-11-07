@@ -7,7 +7,7 @@ function Landing(props) {
   const [isLoading, setIsLoading] = useState(true);
 
   async function getTopKeys() {
-    const url = `https://api.newbitcoincity.com/api/nbc-keys/tokens?network=nos&page=1&limit=200&key_type=1&followers=0,200000&sort_col=buy_price&sort_type=0`;
+    const url = `https://api.newbitcoincity.com/api/nbc-keys/tokens?network=nos&page=1&limit=500&key_type=1&followers=0,200000&sort_col=buy_price&sort_type=0`;
     const response = await fetch(url);
     const data = await response.json();
     const topKeysVar = data.result;
@@ -56,7 +56,7 @@ function Landing(props) {
               Get in Touch with Real Time NewBitcoinCity Statistics.
             </h1>
             <p className="text-2xl mb-8  text-white text-center mx-auto">
-              See top 200 keys, analytics about individual keys, and more!
+              See top 500 keys, analytics about individual keys, and more!
             </p>
           </div>
         </div>
@@ -124,7 +124,7 @@ function Landing(props) {
                 overflowX: "auto",
             }}
             >
-              <table className=" bg-white border border-gray-300 min-w-full overflow-x-auto">
+              <table className=" bg-white border border-gray-300 min-w-full overflow-x-auto ">
                 <thead>
                   <tr>
                     <th className="py-2 px-2 border-b text-left">Rank</th>
