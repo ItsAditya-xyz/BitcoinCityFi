@@ -478,9 +478,8 @@ function Address(props) {
                   </tbody>
                 </table>
               </div>
-            </div>
-          )}
-          {/* <div className="footer text-xl my-4 flex justify-center">
+
+                <div className="footer text-xl my-4 flex justify-center">
             Made with ❤️ by {"   "}{" "}
             <span className="font-bold ml-1">
               <a
@@ -491,7 +490,10 @@ function Address(props) {
                 Aditya Chaudhary
               </a>
             </span>
-          </div> */}
+          </div>
+            </div>
+          )}
+        
         </div>
       )}
     </div>
