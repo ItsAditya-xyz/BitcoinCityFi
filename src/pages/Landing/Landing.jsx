@@ -70,8 +70,9 @@ function Landing(props) {
       finalTotalPieLabels.push(`${totalPieLabels[i]} (${Math.round(datasetData[i]/totalPointsVar*1000)/10}%)`)
     }
     //loop thourhg datasetData and add % to it
+    console.log(restPoints)
     datasetData.push(Math.round(restPoints));
-    totalPieLabels.push("Others");
+    finalTotalPieLabels.push(`Others (${Math.round(restPoints/totalPointsVar*1000)/10}%)`);
     let dataVar = {
       labels: finalTotalPieLabels,
       datasets: [
