@@ -329,10 +329,9 @@ function Address(props) {
                 </p>
                 {netPortfolio.totalCurrent > netPortfolio.totalInvested && (
                   <p className="text-green-500 font-semibold">
-                    Net Profit:{" "}
+                    PnL:{" "}
                     {Math.round(
-                      (netPortfolio.totalCurrent / netPortfolio.totalInvested -
-                        1) *
+                      (netPortfolio.totalCurrent / netPortfolio.totalInvested) *
                         1000
                     ) / 10}
                     %
@@ -342,8 +341,7 @@ function Address(props) {
                   <p className="text-red-500 font-semibold">
                     Net Loss:{" "}
                     {Math.round(
-                      (netPortfolio.totalCurrent / netPortfolio.totalInvested -
-                        1) *
+                      (netPortfolio.totalCurrent / netPortfolio.totalInvested ) *
                         1000
                     ) / 10}
                     %
