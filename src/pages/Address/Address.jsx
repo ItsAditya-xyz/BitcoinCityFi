@@ -17,6 +17,11 @@ function Address(props) {
 
   const [twitterUsername, setTwitterUsername] = useState("");
 
+  const [loadingPortfolio, setLoadingPortfolio] = useState(true);
+  const [portfolioData, setPortfolioData] = useState(null);
+
+  const [netPortfolio, setNetPortfolio] = useState({});
+
   async function getPrice() {
     let URL = `https://api.newbitcoincity.com/api/nbc-keys/chart/data?day=190&address=${address}`;
     let response = await fetch(URL);
@@ -103,6 +108,58 @@ function Address(props) {
     setUsernameInfo(usernameInfoVar);
     setProfileInfo(profileInfoVar);
     setLoading(false);
+
+    const portfolioURL = `https://alpha-api.newbitcoincity.com/api/player-share/holding?address=${address}&page=1&limit=2000&network=nos`;
+    const portfolioResponse = await fetch(portfolioURL);
+    const portfolioData = await portfolioResponse.json();
+    const portfolioInfoVar = portfolioData.result;
+    let finalportfolioInfoVar = [];
+    let totalInvested = 0;
+    let totalCurrent = 0;
+    for (let i = 0; i < portfolioInfoVar.length; i++) {
+      if (portfolioInfoVar[i].ft_balance != "1") {
+        let currentItem = portfolioInfoVar[i];
+        let currentValue =
+          Math.round(
+            (parseFloat(currentItem.usd_price) *
+              parseFloat(currentItem.balance) -
+              (10 * parseFloat(currentItem.usd_price)) / 100) *
+              100
+          ) / 100;
+        currentItem.currentValue =
+          currentValue > 0 ? `$${currentValue}` : `-$${Math.abs(currentValue)}`;
+        let boughtValue =
+          Math.round(
+            parseFloat(currentItem.usd_buy_price) *
+              parseFloat(currentItem.balance) *
+              100
+          ) / 100;
+        totalCurrent += currentValue;
+        totalInvested += boughtValue;
+        let pnl = currentValue - boughtValue;
+        currentItem.pnl =
+          pnl > 0
+            ? `${Math.round((pnl / boughtValue) * 1000) / 10}`
+            : `-${Math.round(Math.abs(pnl / boughtValue) * 1000) / 10}`;
+        let isGreen = pnl > 0 ? true : false;
+        currentItem.isGreen = isGreen;
+
+        finalportfolioInfoVar.push(currentItem);
+      }
+    }
+
+
+    
+
+    setNetPortfolio({
+      totalInvested: totalInvested,
+      totalCurrent: totalCurrent,
+     
+    });
+
+    console.log(portfolioInfoVar);
+    setPortfolioData(finalportfolioInfoVar);
+    setLoadingPortfolio(false);
   }
 
   async function handleSearch() {
@@ -249,7 +306,169 @@ function Address(props) {
             <Line data={chartData} />
           </div>
 
-          <div className="footer text-xl my-4 flex justify-center">
+          {loadingPortfolio && (
+            <div className="flex justify-center items-center my-3">
+              <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          )}
+
+ 
+
+          {!loadingPortfolio && (
+            <div>
+              <h1 className="text-center text-2xl font-semibold my-4">
+                Portfolio
+              </h1>
+              <div className="flex justify-center">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 my-4">
+                <p className="text-md font-semibold text-gray-700">
+                  Amount Invested: ${Math.round(netPortfolio.totalInvested)}
+                </p>
+                <p className="text-md font-semibold text-gray-700 mx-4">
+                  Current Value: ${Math.round(netPortfolio.totalCurrent)}
+                </p>
+                {netPortfolio.totalCurrent > netPortfolio.totalInvested && (
+                  <p className="text-green-500 font-semibold">
+                    Net Profit:{" "}
+                    {Math.round(
+                      (netPortfolio.totalCurrent / netPortfolio.totalInvested -
+                        1) *
+                        1000
+                    ) / 10}
+                    %
+                  </p>
+                )}
+                {netPortfolio.totalCurrent < netPortfolio.totalInvested && (
+                  <p className="text-red-500 font-semibold">
+                    Net Loss:{" "}
+                    {Math.round(
+                      (netPortfolio.totalCurrent / netPortfolio.totalInvested -
+                        1) *
+                        1000
+                    ) / 10}
+                    %
+                  </p>
+                )}
+
+              
+              </div>
+              </div>
+
+              <div
+                className=""
+                style={{
+                  maxWidth: "100%",
+                  overflowX: "auto",
+                }}
+              >
+                <table className=" bg-white border border-gray-300 min-w-full overflow-x-auto ">
+                  <thead>
+                    <tr>
+                      <th className="py-2 px-2 border-b text-left">S.No.</th>
+                      <th className="py-2 px-2 border-b text-left">Key</th>
+                      <th className="py-2 px-2 border-b text-left">Amount</th>
+                      <th className="py-2 px-2 border-b text-left">
+                        Bought Price
+                      </th>
+                      <th className="py-2  px-2 border-b text-left">
+                        Sell Price
+                      </th>
+                      <th className="py-2  px-2 border-b text-left">
+                        Current Value
+                      </th>
+                      <th className="py-2 px-2 border-b text-left">PnL</th>
+                    </tr>
+                  </thead>
+                  <tbody className="">
+                    {portfolioData.map((key, index) => (
+                      <tr key={index}>
+                        <td className="py-2 px-2 border-b border-gray-300">
+                          <div className="flex items-center">
+                            <div className="mr-2">
+                              <p className="text-sm font-medium text-gray-900">
+                                {index + 1}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <a
+                            className="flex items-center space-x-2 my-4"
+                            href={`/address/${key.user.address}`}
+                          >
+                            <div className="flex justify-center items-center space-x-2">
+                              <img
+                                src={key.user.twitter_avatar}
+                                className="rounded-full w-15 h-15 text-gray-800"
+                              />
+                              <div className="flex flex-col justify-center">
+                                <p className="font-bold">
+                                  {key.user.twitter_name}
+                                </p>
+                                <p className="text-md font-semibold text-gray-700">
+                                  {key.user.twitter_username}
+                                </p>
+                              </div>
+                            </div>
+                          </a>
+                        </td>
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <p className="text-sm font-medium text-gray-900">
+                            {Math.round(parseFloat(key.balance) * 10) / 10}
+                          </p>
+                        </td>
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <p className="text-sm font-medium text-gray-900">
+                            $
+                            {Math.round(parseFloat(key.usd_buy_price) * 100) /
+                              100}
+                          </p>
+                        </td>
+
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <p className="text-sm font-medium text-gray-900">
+                            ${Math.round(parseFloat(key.usd_price) * 100) / 100}
+                          </p>
+                        </td>
+
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <p className="text-sm font-medium text-gray-900">
+                            {key.isGreen && (
+                              <span className="text-green-500">
+                                {" "}
+                                {key.currentValue}
+                              </span>
+                            )}
+                            {!key.isGreen && (
+                              <span className="text-red-500">
+                                {" "}
+                                {key.currentValue}
+                              </span>
+                            )}
+                          </p>
+                        </td>
+
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <p className="text-sm font-medium text-gray-900">
+                            {key.isGreen && (
+                              <span className="text-green-500">
+                                {" "}
+                                {key.pnl}%
+                              </span>
+                            )}
+                            {!key.isGreen && (
+                              <span className="text-red-500"> {key.pnl}%</span>
+                            )}
+                          </p>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+          {/* <div className="footer text-xl my-4 flex justify-center">
             Made with ❤️ by {"   "}{" "}
             <span className="font-bold ml-1">
               <a
@@ -260,7 +479,7 @@ function Address(props) {
                 Aditya Chaudhary
               </a>
             </span>
-          </div>
+          </div> */}
         </div>
       )}
     </div>
