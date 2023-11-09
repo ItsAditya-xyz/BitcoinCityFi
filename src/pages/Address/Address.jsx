@@ -109,38 +109,51 @@ function Address(props) {
     setProfileInfo(profileInfoVar);
     setLoading(false);
 
-    const portfolioURL = `https://alpha-api.newbitcoincity.com/api/player-share/holding?address=${address}&page=1&limit=2000&network=nos`;
-    const portfolioResponse = await fetch(portfolioURL);
-    const portfolioData = await portfolioResponse.json();
-    const portfolioInfoVar = portfolioData.result;
     let finalportfolioInfoVar = [];
     let totalInvested = 0;
     let totalCurrent = 0;
-    for (let i = 0; i < portfolioInfoVar.length; i++) {
-      if (portfolioInfoVar[i].ft_balance != "1") {
-        let currentItem = portfolioInfoVar[i];
-        let usd_price = parseFloat(currentItem.usd_price);
-        let usd_buy_price = parseFloat(currentItem.usd_buy_price);
-        let balance = parseFloat(currentItem.balance);
 
-        let currentValue =
-          Math.round((usd_price * balance - (usd_price * balance) / 10) * 100) /
-          100;
-        currentItem.currentValue =
-          currentValue > 0 ? `$${currentValue}` : `-$${Math.abs(currentValue)}`;
-        let boughtValue = Math.round(usd_buy_price * balance * 100) / 100;
-        currentItem.boughtValue = boughtValue
-        totalCurrent += currentValue;
-        totalInvested += boughtValue;
-        let pnl = currentValue - boughtValue;
-        currentItem.pnl =
-          pnl > 0
-            ? `${Math.round((pnl / boughtValue) * 1000) / 10}`
-            : `-${Math.round(Math.abs(pnl / boughtValue) * 1000) / 10}`;
-        let isGreen = pnl > 0 ? true : false;
-        currentItem.isGreen = isGreen;
+    let page = 1;
+    //run a loop until the length of the array is 0
+    while (true) {
+      const portfolioURL = `https://alpha-api.newbitcoincity.com/api/player-share/holding?address=${address}&page=${page}&limit=2000&network=nos`;
+      const portfolioResponse = await fetch(portfolioURL);
+      const portfolioData = await portfolioResponse.json();
+      const portfolioInfoVar = portfolioData.result;
+      console.log(portfolioInfoVar);
+      if (portfolioInfoVar.length == 0) {
+        break;
+      }
+      page += 1;
+      for (let i = 0; i < portfolioInfoVar.length; i++) {
+        if (portfolioInfoVar[i].ft_balance != "1") {
+          let currentItem = portfolioInfoVar[i];
+          let usd_price = parseFloat(currentItem.usd_price);
+          let usd_buy_price = parseFloat(currentItem.usd_buy_price);
+          let balance = parseFloat(currentItem.balance);
 
-        finalportfolioInfoVar.push(currentItem);
+          let currentValue =
+            Math.round(
+              (usd_price * balance - (usd_price * balance) / 10) * 100
+            ) / 100;
+          currentItem.currentValue =
+            currentValue > 0
+              ? `$${currentValue}`
+              : `-$${Math.abs(currentValue)}`;
+          let boughtValue = Math.round(usd_buy_price * balance * 100) / 100;
+          currentItem.boughtValue = boughtValue;
+          totalCurrent += currentValue;
+          totalInvested += boughtValue;
+          let pnl = currentValue - boughtValue;
+          currentItem.pnl =
+            pnl > 0
+              ? `${Math.round((pnl / boughtValue) * 1000) / 10}`
+              : `-${Math.round(Math.abs(pnl / boughtValue) * 1000) / 10}`;
+          let isGreen = pnl > 0 ? true : false;
+          currentItem.isGreen = isGreen;
+
+          finalportfolioInfoVar.push(currentItem);
+        }
       }
     }
 
@@ -149,7 +162,7 @@ function Address(props) {
       totalCurrent: totalCurrent,
     });
 
-    console.log(portfolioInfoVar);
+
     setPortfolioData(finalportfolioInfoVar);
     setLoadingPortfolio(false);
   }
