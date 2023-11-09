@@ -38,7 +38,7 @@ function Landing(props) {
 
   async function getTopPoints() {
     if (Object.keys(topPoints).length > 0) return;
-    const url3 = "https://itsaditya.live/api/nbc/leaderboard?limit=500";
+    const url3 = "https://itsaditya.live/api/nbc/leaderboard?limit=1000";
     const response3 = await fetch(url3);
     const data3 = await response3.json();
     const topPointsVar = data3.result;
