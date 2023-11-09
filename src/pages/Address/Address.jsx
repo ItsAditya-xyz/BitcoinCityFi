@@ -134,7 +134,7 @@ function Address(props) {
 
           let currentValue =
             Math.round(
-              (usd_price * balance - (usd_price * balance) / 10) * 100
+              (usd_price * balance - ((usd_price * balance) / 10)) * 100
             ) / 100;
           currentItem.currentValue =
             currentValue > 0

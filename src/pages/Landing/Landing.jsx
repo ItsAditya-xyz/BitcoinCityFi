@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS } from "chart.js/auto";
+import { Chart } from "react-chartjs-2";
+
 function Landing(props) {
   const [topKeys, setTopKeys] = useState([]);
   const [username, setUsername] = useState("");
@@ -8,6 +12,9 @@ function Landing(props) {
   const [topPortfolio, setTopPortfolio] = useState([]);
   const [topPoints, setTopPoints] = useState({});
   const [currentTab, setCurrentTab] = useState("keys");
+
+  const [pointsStats, setPointsStats] = useState({});
+  const [pointsPieChart, setPointsPieChart] = useState(null);
 
   async function getTopKeys() {
     if (topKeys.length > 0) return;
@@ -35,6 +42,64 @@ function Landing(props) {
     const response3 = await fetch(url3);
     const data3 = await response3.json();
     const topPointsVar = data3.result;
+    let totalPointsVar = 0;
+    let restPoints = 0;
+    //loop through topPointsVar and get total points and sum it up
+    let top10Farmers = [];
+    console.log(topPointsVar);
+    // loop through the object topPointsVar and get the total points
+    for (let i = 0; i < 500; i++) {
+      totalPointsVar += parseFloat(topPointsVar[i].totalPoints);
+      if (i < 10) {
+        top10Farmers.push({
+          name: topPointsVar[i].twitterUsername,
+          points: Math.round(parseFloat(topPointsVar[i].totalPoints)),
+        });
+      } else {
+        restPoints += parseFloat(topPointsVar[i].totalPoints);
+      }
+    }
+
+    let totalPieLabels = top10Farmers.map((item) => item.name);
+    let finalTotalPieLabels = [];
+
+    let datasetData = top10Farmers.map((item) => item.points);
+    console.log(datasetData)
+
+    for(let i=0;i<totalPieLabels.length;i++){
+      finalTotalPieLabels.push(`${totalPieLabels[i]} (${Math.round(datasetData[i]/totalPointsVar*1000)/10}%)`)
+    }
+    //loop thourhg datasetData and add % to it
+    datasetData.push(Math.round(restPoints));
+    totalPieLabels.push("Others");
+    let dataVar = {
+      labels: finalTotalPieLabels,
+      datasets: [
+        {
+          label: "Total Points",
+          data: datasetData,
+
+          backgroundColor: [
+            "rgb(255, 99, 132)",
+            "rgb(54, 162, 235)",
+            "rgb(255, 205, 86)",
+            "#F4CE14",
+            "#F8BDEB",
+            "#DE8F5F",
+            "#00A9FF",
+            "#7743DB",
+            "#D0A2F7",
+            "#164863",
+            "#9FBB73",
+          ],
+        },
+      ],
+    };
+
+    setPointsPieChart(dataVar);
+    setPointsStats({
+      totalPoints: Math.round(totalPointsVar * 100) / 100,
+    });
     setTopPoints(topPointsVar);
   }
 
@@ -379,130 +444,149 @@ function Landing(props) {
 
       {!isLoading && currentTab === "points" && (
         <div>
-          <div>
-            <div
-              className=""
-              style={{
-                maxWidth: "100%",
-                overflowX: "auto",
-              }}
-            >
-              <table className=" bg-white border border-gray-300 min-w-full overflow-x-auto ">
-                <thead>
-                  <tr>
-                    <th className="py-2  px-2 border-b text-left">Rank</th>
-                    <th className="py-2  px-2 border-b text-left">Account</th>
-                    <th className="py-2 px-2 border-b text-left">Points</th>
-                    <th className="py-2  px-2 border-b text-left">
-                      Point (24h)
-                    </th>
+          {!pointsPieChart && (
+            <div className="flex justify-center items-center my-4">
+              <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          )}
 
-                    <th className="py-2  px-2 border-b text-left ">
-                      Point from Post (24h)
-                    </th>
+          {pointsPieChart && (
+            <div>
+              <div className="my-4">
+                <h2 className="text-xl font-bold text-gray-800 mx-2 text-center my-2">
+                  Pie Chart for top 10 Farmers and overall points share among
+                  top 500 Farmers
+                </h2>
+                <h3 className="text-md font-semibold text-gray-800 mx-2 text-center my-2">
+                  Total Points: {pointsStats.totalPoints.toLocaleString()}
+                </h3>
+                <div className="flex justify-center items-center lg:w-1/2 w-3/4 sm:3/5 mx-auto">
+                  <Doughnut data={pointsPieChart} />
+                </div>
+              </div>
+              <div
+                className=""
+                style={{
+                  maxWidth: "100%",
+                  overflowX: "auto",
+                }}
+              >
+                <table className=" bg-white border border-gray-300 min-w-full overflow-x-auto ">
+                  <thead>
+                    <tr>
+                      <th className="py-2  px-2 border-b text-left">Rank</th>
+                      <th className="py-2  px-2 border-b text-left">Account</th>
+                      <th className="py-2 px-2 border-b text-left">Points</th>
+                      <th className="py-2  px-2 border-b text-left">
+                        Point (24h)
+                      </th>
 
-                    <th className="py-2  px-2 border-b text-left">
-                      Point from Volume (24h)
-                    </th>
+                      <th className="py-2  px-2 border-b text-left ">
+                        Point from Post (24h)
+                      </th>
 
-                    <th className="py-2  px-2 border-b text-left">
-                      Point from Trade (24h)
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="">
-                  {Object.keys(topPoints).map((key, index) => (
-                    <tr key={key}>
-                      <td className="py-2 px-2 border-b border-gray-300">
-                        <div className="flex items-center">
-                          <div className="mr-2">
-                            <p className="text-sm font-medium text-gray-900">
-                              {index + 1}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-2 px-2  border-b border-gray-300">
-                        <a
-                          className="flex items-center space-x-2 my-4"
-                          href={`/address/${topPoints[key].address}`}
-                        >
-                          <div className="flex justify-center items-center space-x-2">
-                            <img
-                              src={topPoints[key].twitterPfp}
-                              className="rounded-full w-15 h-15 text-gray-800"
-                            />
-                            <div className="flex flex-col justify-center">
-                              <p className="font-bold">
-                                {topPoints[key].twitterName}
-                              </p>
-                              <p className="text-md font-semibold text-gray-700">
-                                {topPoints[key].twitterUsername}
+                      <th className="py-2  px-2 border-b text-left">
+                        Point from Volume (24h)
+                      </th>
+
+                      <th className="py-2  px-2 border-b text-left">
+                        Point from Trade (24h)
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="">
+                    {Object.keys(topPoints).map((key, index) => (
+                      <tr key={key}>
+                        <td className="py-2 px-2 border-b border-gray-300">
+                          <div className="flex items-center">
+                            <div className="mr-2">
+                              <p className="text-sm font-medium text-gray-900">
+                                {index + 1}
                               </p>
                             </div>
                           </div>
-                        </a>
-                      </td>
-                      <td className="py-2 px-2  border-b border-gray-300">
-                        <p className="text-sm font-medium text-gray-900">
-                          {parseFloat(
-                            topPoints[key].totalPoints
-                          ).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </p>
-                      </td>
-                      <td className="py-2 px-2  border-b border-gray-300">
-                        <p className="text-sm font-medium text-gray-900">
-                          {parseFloat(topPoints[key].pointIn24H).toLocaleString(
-                            undefined,
-                            {
+                        </td>
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <a
+                            className="flex items-center space-x-2 my-4"
+                            href={`/address/${topPoints[key].address}`}
+                          >
+                            <div className="flex justify-center items-center space-x-2">
+                              <img
+                                src={topPoints[key].twitterPfp}
+                                className="rounded-full w-15 h-15 text-gray-800"
+                              />
+                              <div className="flex flex-col justify-center">
+                                <p className="font-bold">
+                                  {topPoints[key].twitterName}
+                                </p>
+                                <p className="text-md font-semibold text-gray-700">
+                                  {topPoints[key].twitterUsername}
+                                </p>
+                              </div>
+                            </div>
+                          </a>
+                        </td>
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <p className="text-sm font-medium text-gray-900">
+                            {parseFloat(
+                              topPoints[key].totalPoints
+                            ).toLocaleString(undefined, {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
-                            }
-                          )}
-                        </p>
-                      </td>
+                            })}
+                          </p>
+                        </td>
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <p className="text-sm font-medium text-gray-900">
+                            {parseFloat(
+                              topPoints[key].pointIn24H
+                            ).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </p>
+                        </td>
 
-                      <td className="py-2 px-2  border-b border-gray-300">
-                        <p className="text-sm font-medium text-gray-900">
-                          {parseFloat(
-                            topPoints[key].pointFromPost
-                          ).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </p>
-                      </td>
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <p className="text-sm font-medium text-gray-900">
+                            {parseFloat(
+                              topPoints[key].pointFromPost
+                            ).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </p>
+                        </td>
 
-                      <td className="py-2 px-2  border-b border-gray-300">
-                        <p className="text-sm font-medium text-gray-900">
-                          {parseFloat(
-                            topPoints[key].pointFromVol
-                          ).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </p>
-                      </td>
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <p className="text-sm font-medium text-gray-900">
+                            {parseFloat(
+                              topPoints[key].pointFromVol
+                            ).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </p>
+                        </td>
 
-                      <td className="py-2 px-2  border-b border-gray-300">
-                        <p className="text-sm font-medium text-gray-900">
-                          {parseFloat(
-                            topPoints[key].pointFromTrade
-                          ).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </p>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <p className="text-sm font-medium text-gray-900">
+                            {parseFloat(
+                              topPoints[key].pointFromTrade
+                            ).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </p>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
     </div>
