@@ -119,21 +119,17 @@ function Address(props) {
     for (let i = 0; i < portfolioInfoVar.length; i++) {
       if (portfolioInfoVar[i].ft_balance != "1") {
         let currentItem = portfolioInfoVar[i];
+        let usd_price = parseFloat(currentItem.usd_price);
+        let usd_buy_price = parseFloat(currentItem.usd_buy_price);
+        let balance = parseFloat(currentItem.balance);
+
         let currentValue =
-          Math.round(
-            (parseFloat(currentItem.usd_price) *
-              parseFloat(currentItem.balance) -
-              (10 * parseFloat(currentItem.usd_price)) / 100) *
-              100
-          ) / 100;
+          Math.round((usd_price * balance - (usd_price * balance) / 10) * 100) /
+          100;
         currentItem.currentValue =
           currentValue > 0 ? `$${currentValue}` : `-$${Math.abs(currentValue)}`;
-        let boughtValue =
-          Math.round(
-            parseFloat(currentItem.usd_buy_price) *
-              parseFloat(currentItem.balance) *
-              100
-          ) / 100;
+        let boughtValue = Math.round(usd_buy_price * balance * 100) / 100;
+        currentItem.boughtValue = boughtValue
         totalCurrent += currentValue;
         totalInvested += boughtValue;
         let pnl = currentValue - boughtValue;
@@ -148,13 +144,9 @@ function Address(props) {
       }
     }
 
-
-    
-
     setNetPortfolio({
       totalInvested: totalInvested,
       totalCurrent: totalCurrent,
-     
     });
 
     console.log(portfolioInfoVar);
@@ -312,44 +304,42 @@ function Address(props) {
             </div>
           )}
 
- 
-
           {!loadingPortfolio && (
             <div>
               <h1 className="text-center text-2xl font-semibold my-4">
                 Portfolio
               </h1>
               <div className="flex justify-center">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 my-4">
-                <p className="text-md font-semibold text-gray-700">
-                  Amount Invested: ${Math.round(netPortfolio.totalInvested)}
-                </p>
-                <p className="text-md font-semibold text-gray-700 mx-4">
-                  Current Value: ${Math.round(netPortfolio.totalCurrent)}
-                </p>
-                {netPortfolio.totalCurrent > netPortfolio.totalInvested && (
-                  <p className="text-green-500 font-semibold">
-                    PnL:{" "}
-                    {Math.round(
-                      (netPortfolio.totalCurrent / netPortfolio.totalInvested) *
-                        1000
-                    ) / 10}
-                    %
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 my-4">
+                  <p className="text-md font-semibold text-gray-700">
+                    Amount Invested: ${Math.round(netPortfolio.totalInvested)}
                   </p>
-                )}
-                {netPortfolio.totalCurrent < netPortfolio.totalInvested && (
-                  <p className="text-red-500 font-semibold">
-                    Net Loss:{" "}
-                    {Math.round(
-                      (netPortfolio.totalCurrent / netPortfolio.totalInvested ) *
-                        1000
-                    ) / 10}
-                    %
+                  <p className="text-md font-semibold text-gray-700 mx-4">
+                    Current Value: ${Math.round(netPortfolio.totalCurrent)}
                   </p>
-                )}
-
-              
-              </div>
+                  {netPortfolio.totalCurrent > netPortfolio.totalInvested && (
+                    <p className="text-green-500 font-semibold">
+                      PnL:{" "}
+                      {Math.round(
+                        (netPortfolio.totalCurrent /
+                          netPortfolio.totalInvested) *
+                          1000
+                      ) / 10}
+                      %
+                    </p>
+                  )}
+                  {netPortfolio.totalCurrent < netPortfolio.totalInvested && (
+                    <p className="text-red-500 font-semibold">
+                      Net Loss:{" "}
+                      {Math.round(
+                        (netPortfolio.totalCurrent /
+                          netPortfolio.totalInvested) *
+                          1000
+                      ) / 10}
+                      %
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div
@@ -369,8 +359,13 @@ function Address(props) {
                         Bought Price
                       </th>
                       <th className="py-2  px-2 border-b text-left">
-                        Sell Price
+                        Current Price
                       </th>
+
+                      <th className="py-2  px-2 border-b text-left">
+                        Amount Invested
+                      </th>
+
                       <th className="py-2  px-2 border-b text-left">
                         Current Value
                       </th>
@@ -426,6 +421,12 @@ function Address(props) {
                         <td className="py-2 px-2  border-b border-gray-300">
                           <p className="text-sm font-medium text-gray-900">
                             ${Math.round(parseFloat(key.usd_price) * 100) / 100}
+                          </p>
+                        </td>
+
+                        <td className="py-2 px-2  border-b border-gray-300">
+                          <p className="text-sm font-medium text-gray-900">
+                            ${key.boughtValue}
                           </p>
                         </td>
 
