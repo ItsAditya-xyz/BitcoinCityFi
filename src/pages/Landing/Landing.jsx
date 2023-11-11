@@ -29,7 +29,7 @@ function Landing(props) {
 
   async function getTopPortfolios() {
     if (topPortfolio.length > 0) return;
-    const url2 = `https://alpha-api.newbitcoincity.com/api/player-share/tokens?network=nos&page=1&limit=30&key_type=1&side=1&followers=0,200000&price_usd=0,1000&sort_col=portfolio&sort_type=0&address=0x26B131763413838375B4B6Adb149c59E43CD4445&holder=0&placeholder=0&price=0,1000&search=&portfolio=1`;
+    const url2 = `https://alpha-api.newbitcoincity.com/api/player-share/tokens?network=nos&page=1&limit=500&key_type=1&side=1&followers=0,200000&price_usd=0,1000&sort_col=portfolio&sort_type=0&address=0x26B131763413838375B4B6Adb149c59E43CD4445&holder=0&placeholder=0&price=0,1000&search=&portfolio=1`;
     const response2 = await fetch(url2);
     const data2 = await response2.json();
     const topPortfoliosVar = data2.result;
