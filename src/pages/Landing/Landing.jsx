@@ -38,7 +38,7 @@ function Landing(props) {
 
   async function getTopPoints() {
     if (Object.keys(topPoints).length > 0) return;
-    const url3 = "https://itsaditya.live/api/nbc/leaderboard?limit=1000";
+    const url3 = "https://itsaditya.live/api/nbc/leaderboard?limit=2000";
     const response3 = await fetch(url3);
     const data3 = await response3.json();
     const topPointsVar = data3.result;
@@ -149,7 +149,7 @@ function Landing(props) {
               Get in Touch with Real Time NewBitcoinCity Statistics.
             </h1>
             <p className="text-2xl mb-8  text-white text-center mx-auto">
-              See top 500 keys, analytics about individual keys, and more!
+              See top NBC keys, analytics about individual keys, airdrop points and more!
             </p>
           </div>
         </div>
