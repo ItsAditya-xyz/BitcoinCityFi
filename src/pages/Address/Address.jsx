@@ -102,7 +102,7 @@ function Address(props) {
     const profileInfoVar = profileData.result;
     setTwitterUsername(profileInfoVar.twitter_username);
 
-    const usernameSearch = `https://alpha-api.newbitcoincity.com/api/player-share/tokensv1?network=nos&page=1&limit=30&key_type=1&side=1&followers=0,200000&price_usd=0,1000&sort_col=created_at&sort_type=0&holder=0&placeholder=0&price=0,1000&search=${profileInfoVar.twitter_username}`;
+    const usernameSearch = ` https://alpha-api.newbitcoincity.com/api/nbc-keys/tokens?network=nos&address=&page=1&limit=100&search=${profileInfoVar.twitter_username}`;
     const usernameResponse = await fetch(usernameSearch);
     const usernameData = await usernameResponse.json();
     const usernameInfoVar = usernameData.result[0];
@@ -110,7 +110,7 @@ function Address(props) {
     const createdAt = new Date(usernameInfoVar.created_at);
     const dayNumber = createdAt.getDate();
     const todaysDayNumber = new Date().getDate();
-    
+
     if (dayNumber == todaysDayNumber) {
       setHasAnniversarry(true);
     }
@@ -177,7 +177,7 @@ function Address(props) {
   }
 
   async function handleSearch() {
-    const url = `https://alpha-api.newbitcoincity.com/api/player-share/tokensv1?network=nos&page=1&limit=30&key_type=1&side=1&followers=0,200000&price_usd=0,1000&sort_col=created_at&sort_type=0&holder=0&placeholder=0&price=0,1000&search=${twitterUsername}`;
+    const url = `https://alpha-api.newbitcoincity.com/api/nbc-keys/tokens?network=nos&address=&page=1&limit=100&search=${twitterUsername}`;
     if (!twitterUsername) {
       toast.error("Please enter a valid twitter username");
       return;

@@ -120,7 +120,8 @@ function Landing(props) {
       letFinalUsername = username.substring(1);
     }
 
-    const url = `https://alpha-api.newbitcoincity.com/api/player-share/tokensv1?network=nos&page=1&limit=30&key_type=1&side=1&followers=0,200000&price_usd=0,1000&sort_col=created_at&sort_type=0&holder=0&placeholder=0&price=0,1000&search=${letFinalUsername}`;
+   
+    const url = `https://alpha-api.newbitcoincity.com/api/nbc-keys/tokens?network=nos&address=&page=1&limit=100&search=${letFinalUsername}`;
 
     const loadingToast = toast.loading("Searching...");
     try {
