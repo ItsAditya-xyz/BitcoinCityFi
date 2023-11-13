@@ -4,6 +4,7 @@ import { Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Chart } from "react-chartjs-2";
 import toast, { Toaster } from "react-hot-toast";
+import Confetti from "react-confetti";
 
 function Address(props) {
   const { address } = useParams();
@@ -21,6 +22,7 @@ function Address(props) {
   const [portfolioData, setPortfolioData] = useState(null);
 
   const [netPortfolio, setNetPortfolio] = useState({});
+  const [hasAnniversarry, setHasAnniversarry] = useState(false);
 
   async function getPrice() {
     let URL = `https://api.newbitcoincity.com/api/nbc-keys/chart/data?day=190&address=${address}`;
@@ -105,6 +107,14 @@ function Address(props) {
     const usernameData = await usernameResponse.json();
     const usernameInfoVar = usernameData.result[0];
     console.log(usernameInfoVar);
+    const createdAt = new Date(usernameInfoVar.created_at);
+    const dayNumber = createdAt.getDate();
+    const todaysDayNumber = new Date().getDate();
+    
+    if (dayNumber == todaysDayNumber) {
+      setHasAnniversarry(true);
+    }
+
     setUsernameInfo(usernameInfoVar);
     setProfileInfo(profileInfoVar);
     setLoading(false);
@@ -134,7 +144,7 @@ function Address(props) {
 
           let currentValue =
             Math.round(
-              (usd_price * balance - ((usd_price * balance) / 10)) * 100
+              (usd_price * balance - (usd_price * balance) / 10) * 100
             ) / 100;
           currentItem.currentValue =
             currentValue > 0
@@ -161,7 +171,6 @@ function Address(props) {
       totalInvested: totalInvested,
       totalCurrent: totalCurrent,
     });
-
 
     setPortfolioData(finalportfolioInfoVar);
     setLoadingPortfolio(false);
@@ -197,70 +206,78 @@ function Address(props) {
   useEffect(() => {
     getPrice();
   }, []);
+
+  // if hasAnniversarry is true, then make hasAnniversarry false after 10 seconds
+  useEffect(() => {
+    if (hasAnniversarry) {
+      setTimeout(() => {
+        setHasAnniversarry(false);
+      }, 10000);
+    }
+  }, [hasAnniversarry]);
   return (
     <div>
       <Toaster />
       {loading && (
-        <div className="flex justify-center items-center h-screen">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+        <div className='flex justify-center items-center h-screen'>
+          <div className='animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500'></div>
         </div>
       )}
 
       {!loading && (
-        <div className="">
-          <a href="/" className="text-2xl font-bold text-gray-700 mx-4 my-5">
+        <div className=''>
+          <a href='/' className='text-2xl font-bold text-gray-700 mx-4 my-5'>
             BitcoinCityFi
           </a>
-          <div className="flex justify-center items-center space-x-1 mx-1 mt-2">
+          <div className='flex justify-center items-center space-x-1 mx-1 mt-2'>
             <input
-              type="text"
+              type='text'
               placeholder={`Enter twitter handle`}
               value={twitterUsername}
               onChange={(e) => setTwitterUsername(e.target.value)}
-              className="bg-gray-700 hover:bg-gray-800 text-white  py-3 w-3/4 sm:w-2/5 px-3 rounded-md shadow-inner  outline-none"
+              className='bg-gray-700 hover:bg-gray-800 text-white  py-3 w-3/4 sm:w-2/5 px-3 rounded-md shadow-inner  outline-none'
             />
 
             <button
-              className="bg-gray-700 hover:bg-gray-800 text-white  py-3  px-8 rounded-md shadow-md"
+              className='bg-gray-700 hover:bg-gray-800 text-white  py-3  px-8 rounded-md shadow-md'
               onClick={() => {
                 handleSearch();
-              }}
-            >
+              }}>
               Search
             </button>
           </div>
+          {hasAnniversarry && <Confetti />}
 
-          <div className="my-4 flex justify-center">
-            <div className="profileInfo my-4">
+          <div className='my-4 flex justify-center'>
+            <div className='profileInfo my-4'>
               <a
-                className="flex justify-center items-center space-x-2"
-                href={`https://twitter.com/${profileInfo.twitter_username}`}
-              >
+                className='flex justify-center items-center space-x-2'
+                href={`https://twitter.com/${profileInfo.twitter_username}`}>
                 <img
                   src={profileInfo.twitter_avatar}
-                  className="rounded-full w-15 h-15 text-gray-800"
+                  className='rounded-full w-15 h-15 text-gray-800'
                 />
-                <div className="flex flex-col justify-center">
-                  <p className="font-bold">{profileInfo.twitter_name}</p>
-                  <p className="text-md font-semibold text-gray-700">
+                <div className='flex flex-col justify-center'>
+                  <p className='font-bold'>{profileInfo.twitter_name}</p>
+                  <p className='text-md font-semibold text-gray-700'>
                     @{profileInfo.twitter_username}
                   </p>
                 </div>
               </a>
 
               {/* <div className="sm:w-3/4 mx-auto my-4 flex flex-auto flex-wrap space-x-8 space-y-1 sm:space-y-2"> */}
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4">
-                <p className="">
-                  <span className="font-semibold">Key Price</span>: $
+              <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4'>
+                <p className=''>
+                  <span className='font-semibold'>Key Price</span>: $
                   {Math.round(parseFloat(usernameInfo.usd_price) * 100) / 100}
                 </p>
 
-                <p className="">
-                  <span className="font-semibold">Key Supply</span> :{" "}
+                <p className=''>
+                  <span className='font-semibold'>Key Supply</span> :{" "}
                   {Math.round(usernameInfo.total_supply_number * 10) / 10}
                 </p>
-                <p className="">
-                  <span className="font-semibold">Joined</span>:{" "}
+                <p className=''>
+                  <span className='font-semibold'>Joined</span>:{" "}
                   {new Date(usernameInfo.created_at).toLocaleString("en-US", {
                     year: "numeric",
                     month: "short",
@@ -269,14 +286,14 @@ function Address(props) {
                 </p>
 
                 <p>
-                  <span className="font-semibold">Volume</span>:{" "}
+                  <span className='font-semibold'>Volume</span>:{" "}
                   {Math.round(parseFloat(usernameInfo.total_volume) * 1000) /
                     1000}{" "}
                   BTC
                 </p>
 
                 <p>
-                  <span className="font-semibold">Earning</span>:{" "}
+                  <span className='font-semibold'>Earning</span>:{" "}
                   {Math.round(parseFloat(profileInfo.earning_fee) * 10000) /
                     10000}{" "}
                   BTC{" "}
@@ -284,54 +301,54 @@ function Address(props) {
 
                 <p>
                   {" "}
-                  <span className="font-semibold">Holders</span>:{" "}
+                  <span className='font-semibold'>Holders</span>:{" "}
                   {profileInfo.holders}
                 </p>
 
                 <p>
                   {" "}
-                  <span className="font-semibold">Holding</span>:{" "}
+                  <span className='font-semibold'>Holding</span>:{" "}
                   {profileInfo.holding}
                 </p>
 
                 <p>
                   {" "}
-                  <span className="font-semibold">Chat Entry</span>:{" "}
+                  <span className='font-semibold'>Chat Entry</span>:{" "}
                   {profileInfo.min_holding_requirement} Key
                 </p>
 
                 <p>
-                  <span className="font-semibold">Self Keys</span>:{" "}
+                  <span className='font-semibold'>Self Keys</span>:{" "}
                   {Math.round(parseFloat(profileInfo.own_keys) * 10) / 10}
                 </p>
               </div>
             </div>
           </div>
-          <div className="sm:w-3/4 mx-auto ">
+          <div className='sm:w-3/4 mx-auto '>
             <Line data={chartData} />
           </div>
 
           {loadingPortfolio && (
-            <div className="flex justify-center items-center my-3">
-              <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+            <div className='flex justify-center items-center my-3'>
+              <div className='animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500'></div>
             </div>
           )}
 
           {!loadingPortfolio && (
             <div>
-              <h1 className="text-center text-2xl font-semibold my-4">
+              <h1 className='text-center text-2xl font-semibold my-4'>
                 Portfolio
               </h1>
-              <div className="flex justify-center">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 my-4">
-                  <p className="text-md font-semibold text-gray-700">
+              <div className='flex justify-center'>
+                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 my-4'>
+                  <p className='text-md font-semibold text-gray-700'>
                     Amount Invested: ${Math.round(netPortfolio.totalInvested)}
                   </p>
-                  <p className="text-md font-semibold text-gray-700 mx-4">
+                  <p className='text-md font-semibold text-gray-700 mx-4'>
                     Current Value: ${Math.round(netPortfolio.totalCurrent)}
                   </p>
                   {netPortfolio.totalCurrent > netPortfolio.totalInvested && (
-                    <p className="text-green-500 font-semibold">
+                    <p className='text-green-500 font-semibold'>
                       PnL:{" "}
                       {Math.round(
                         (netPortfolio.totalCurrent /
@@ -342,7 +359,7 @@ function Address(props) {
                     </p>
                   )}
                   {netPortfolio.totalCurrent < netPortfolio.totalInvested && (
-                    <p className="text-red-500 font-semibold">
+                    <p className='text-red-500 font-semibold'>
                       Net Loss:{" "}
                       {Math.round(
                         (netPortfolio.totalCurrent /
@@ -356,103 +373,101 @@ function Address(props) {
               </div>
 
               <div
-                className=""
+                className=''
                 style={{
                   maxWidth: "100%",
                   overflowX: "auto",
-                }}
-              >
-                <table className=" bg-white border border-gray-300 min-w-full overflow-x-auto ">
+                }}>
+                <table className=' bg-white border border-gray-300 min-w-full overflow-x-auto '>
                   <thead>
                     <tr>
-                      <th className="py-2 px-2 border-b text-left">S.No.</th>
-                      <th className="py-2 px-2 border-b text-left">Key</th>
-                      <th className="py-2 px-2 border-b text-left">Amount</th>
-                      <th className="py-2 px-2 border-b text-left">
+                      <th className='py-2 px-2 border-b text-left'>S.No.</th>
+                      <th className='py-2 px-2 border-b text-left'>Key</th>
+                      <th className='py-2 px-2 border-b text-left'>Amount</th>
+                      <th className='py-2 px-2 border-b text-left'>
                         Bought Price
                       </th>
-                      <th className="py-2  px-2 border-b text-left">
+                      <th className='py-2  px-2 border-b text-left'>
                         Current Price
                       </th>
 
-                      <th className="py-2  px-2 border-b text-left">
+                      <th className='py-2  px-2 border-b text-left'>
                         Amount Invested
                       </th>
 
-                      <th className="py-2  px-2 border-b text-left">
+                      <th className='py-2  px-2 border-b text-left'>
                         Current Value
                       </th>
-                      <th className="py-2 px-2 border-b text-left">PnL</th>
+                      <th className='py-2 px-2 border-b text-left'>PnL</th>
                     </tr>
                   </thead>
-                  <tbody className="">
+                  <tbody className=''>
                     {portfolioData.map((key, index) => (
                       <tr key={index}>
-                        <td className="py-2 px-2 border-b border-gray-300">
-                          <div className="flex items-center">
-                            <div className="mr-2">
-                              <p className="text-sm font-medium text-gray-900">
+                        <td className='py-2 px-2 border-b border-gray-300'>
+                          <div className='flex items-center'>
+                            <div className='mr-2'>
+                              <p className='text-sm font-medium text-gray-900'>
                                 {index + 1}
                               </p>
                             </div>
                           </div>
                         </td>
-                        <td className="py-2 px-2  border-b border-gray-300">
+                        <td className='py-2 px-2  border-b border-gray-300'>
                           <a
-                            className="flex items-center space-x-2 my-4"
-                            href={`/address/${key.user.address}`}
-                          >
-                            <div className="flex justify-center items-center space-x-2">
+                            className='flex items-center space-x-2 my-4'
+                            href={`/address/${key.user.address}`}>
+                            <div className='flex justify-center items-center space-x-2'>
                               <img
                                 src={key.user.twitter_avatar}
-                                className="rounded-full w-15 h-15 text-gray-800"
+                                className='rounded-full w-15 h-15 text-gray-800'
                               />
-                              <div className="flex flex-col justify-center">
-                                <p className="font-bold">
+                              <div className='flex flex-col justify-center'>
+                                <p className='font-bold'>
                                   {key.user.twitter_name}
                                 </p>
-                                <p className="text-md font-semibold text-gray-700">
+                                <p className='text-md font-semibold text-gray-700'>
                                   {key.user.twitter_username}
                                 </p>
                               </div>
                             </div>
                           </a>
                         </td>
-                        <td className="py-2 px-2  border-b border-gray-300">
-                          <p className="text-sm font-medium text-gray-900">
+                        <td className='py-2 px-2  border-b border-gray-300'>
+                          <p className='text-sm font-medium text-gray-900'>
                             {Math.round(parseFloat(key.balance) * 10) / 10}
                           </p>
                         </td>
-                        <td className="py-2 px-2  border-b border-gray-300">
-                          <p className="text-sm font-medium text-gray-900">
+                        <td className='py-2 px-2  border-b border-gray-300'>
+                          <p className='text-sm font-medium text-gray-900'>
                             $
                             {Math.round(parseFloat(key.usd_buy_price) * 100) /
                               100}
                           </p>
                         </td>
 
-                        <td className="py-2 px-2  border-b border-gray-300">
-                          <p className="text-sm font-medium text-gray-900">
+                        <td className='py-2 px-2  border-b border-gray-300'>
+                          <p className='text-sm font-medium text-gray-900'>
                             ${Math.round(parseFloat(key.usd_price) * 100) / 100}
                           </p>
                         </td>
 
-                        <td className="py-2 px-2  border-b border-gray-300">
-                          <p className="text-sm font-medium text-gray-900">
+                        <td className='py-2 px-2  border-b border-gray-300'>
+                          <p className='text-sm font-medium text-gray-900'>
                             ${key.boughtValue}
                           </p>
                         </td>
 
-                        <td className="py-2 px-2  border-b border-gray-300">
-                          <p className="text-sm font-medium text-gray-900">
+                        <td className='py-2 px-2  border-b border-gray-300'>
+                          <p className='text-sm font-medium text-gray-900'>
                             {key.isGreen && (
-                              <span className="text-green-500">
+                              <span className='text-green-500'>
                                 {" "}
                                 {key.currentValue}
                               </span>
                             )}
                             {!key.isGreen && (
-                              <span className="text-red-500">
+                              <span className='text-red-500'>
                                 {" "}
                                 {key.currentValue}
                               </span>
@@ -460,16 +475,16 @@ function Address(props) {
                           </p>
                         </td>
 
-                        <td className="py-2 px-2  border-b border-gray-300">
-                          <p className="text-sm font-medium text-gray-900">
+                        <td className='py-2 px-2  border-b border-gray-300'>
+                          <p className='text-sm font-medium text-gray-900'>
                             {key.isGreen && (
-                              <span className="text-green-500">
+                              <span className='text-green-500'>
                                 {" "}
                                 {key.pnl}%
                               </span>
                             )}
                             {!key.isGreen && (
-                              <span className="text-red-500"> {key.pnl}%</span>
+                              <span className='text-red-500'> {key.pnl}%</span>
                             )}
                           </p>
                         </td>
@@ -479,21 +494,19 @@ function Address(props) {
                 </table>
               </div>
 
-                <div className="footer text-xl my-4 flex justify-center">
-            Made with ❤️ by {"   "}{" "}
-            <span className="font-bold ml-1">
-              <a
-                href="https://twitter.com/itsaditya_xyz"
-                target="_blank"
-                className="text-blue-500"
-              >
-                Aditya Chaudhary
-              </a>
-            </span>
-          </div>
+              <div className='footer text-xl my-4 flex justify-center'>
+                Made with ❤️ by {"   "}{" "}
+                <span className='font-bold ml-1'>
+                  <a
+                    href='https://twitter.com/itsaditya_xyz'
+                    target='_blank'
+                    className='text-blue-500'>
+                    Aditya Chaudhary
+                  </a>
+                </span>
+              </div>
             </div>
           )}
-        
         </div>
       )}
     </div>
