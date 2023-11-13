@@ -226,8 +226,8 @@ function Address(props) {
 
       {!loading && (
         <div className=''>
-          <a href='/' className='text-2xl font-bold text-gray-700 mx-4 my-5'>
-            BitcoinCityFi
+          <a href='/' className='text-3xl font-bold text-gray-700 mx-4 my-5'>
+            AlphaFi
           </a>
           <div className='flex justify-center items-center space-x-1 mx-1 mt-2'>
             <input

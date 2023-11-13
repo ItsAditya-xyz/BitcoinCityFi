@@ -146,10 +146,10 @@ function Landing(props) {
         <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center ">
           <div className="flex flex-col w-full md:w-3/5 mx-auto justify-center items-start text-center md:text-left">
             <h1 className="my-4 text-5xl font-extrabold leading-tight text-white text-center">
-              Get in Touch with Real Time NewBitcoinCity Statistics.
+              Get in Touch with Real Time Alpha Statistics.
             </h1>
             <p className="text-2xl mb-8  text-white text-center mx-auto">
-              See top NBC keys, analytics about individual keys, airdrop points and more!
+              See top Alpha keys, analytics about individual keys, airdrop points and more!
             </p>
           </div>
         </div>
