@@ -146,7 +146,7 @@ function Landing(props) {
       <div className="pt-24 sm:pt-24 bg-gradient-to-r from-blue-500  to-red-400  sm:pb-10 ">
         <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center ">
           <div className="flex flex-col w-full md:w-3/5 mx-auto justify-center items-start text-center md:text-left">
-            <h1 className="my-4 text-5xl font-extrabold leading-tight text-white text-center">
+            <h1 className="my-4 text-5xl sm:text-6xl font-extrabold leading-tight text-white text-center">
               Get in Touch with Real Time Alpha Statistics.
             </h1>
             <p className="text-2xl mb-8  text-white text-center mx-auto">
@@ -162,10 +162,10 @@ function Landing(props) {
               placeholder={`Enter twitter handle`}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-4 sm:py-5 w-3/4 sm:w-2/5 px-3 rounded-md shadow-inner  outline-none"
+              className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-4 sm:py-4 w-3/4 sm:w-1/3 px-3 rounded-md shadow-inner  outline-none"
             />
             <button
-              className="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 sm:py-4 px-16 rounded-md shadow-md"
+              className="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 sm:py-3 px-12 rounded-md shadow-md"
               onClick={() => {
                 handleSearch();
               }}
