@@ -457,7 +457,7 @@ function Landing(props) {
               <div className="my-4">
                 <h2 className="text-xl font-bold text-gray-800 mx-2 text-center my-2">
                   Pie Chart for Top 10 Farmers and overall points share among
-                  Top 500 Farmers
+                  Top 2000 users.
                 </h2>
                 <h3 className="text-md font-semibold text-gray-800 mx-2 text-center my-2">
                   Total Points: {pointsStats.totalPoints.toLocaleString()}
