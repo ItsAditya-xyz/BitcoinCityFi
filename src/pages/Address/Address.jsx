@@ -100,6 +100,8 @@ function Address(props) {
     const profileResponse = await fetch(profileURL);
     const profileData = await profileResponse.json();
     const profileInfoVar = profileData.result;
+    //make tab title as twitter username
+    document.title = `AlphaFi | ${profileInfoVar.twitter_username} `
     setTwitterUsername(profileInfoVar.twitter_username);
 
     const usernameSearch = ` https://alpha-api.newbitcoincity.com/api/nbc-keys/tokens?network=nos&address=&page=1&limit=100&search=${profileInfoVar.twitter_username}`;
