@@ -143,7 +143,7 @@ function Landing(props) {
   return (
     <div>
       <Toaster />
-      <div className="pt-12 sm:pt-24 bg-gradient-to-r from-blue-500  to-red-400  sm:pb-10 ">
+      <div className="pt-10 sm:pt-24 bg-gradient-to-r from-blue-500  to-red-400  sm:pb-10 ">
         <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center ">
           <div className="flex flex-col w-full md:w-3/5 mx-auto justify-center items-start text-center md:text-left">
             <h1 className="my-4 text-5xl sm:text-6xl font-extrabold leading-tight text-white text-center">
