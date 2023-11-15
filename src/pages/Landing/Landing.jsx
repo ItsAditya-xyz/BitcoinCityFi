@@ -202,7 +202,7 @@ function Landing(props) {
           to access wallet tracking and key alerts {"   "}{" "}
         </div>
       </div>
-
+        <div className="bg-white">
       {isLoading && (
         <div className="flex justify-center items-center my-4">
           <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
@@ -591,6 +591,7 @@ function Landing(props) {
           )}
         </div>
       )}
+      </div>
     </div>
   );
 }
