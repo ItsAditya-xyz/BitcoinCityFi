@@ -227,7 +227,7 @@ function Address(props) {
       )}
 
       {!loading && (
-        <div className=''>
+        <div className='bg-white'>
           <a href='/' className='text-3xl font-bold text-gray-700 mx-4 my-5'>
             AlphaFi
           </a>

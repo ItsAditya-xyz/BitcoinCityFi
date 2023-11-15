@@ -209,9 +209,9 @@ function Landing(props) {
         </div>
       )}
       {!isLoading && (
-        <div className="flex justify-center items-center my-4">
+        <div className="flex justify-center items-center my-4 bg-white">
           {/* have a dropdown that has sort by Keys and sort by Portfolio */}
-          <div className="flex justify-center items-center space-x-4">
+          <div className="flex justify-center items-center space-x-4 bg-white">
             <button
               className={`outline-none px-3  py-3 ${
                 currentTab === "keys" &&
