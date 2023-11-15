@@ -218,7 +218,7 @@ function Address(props) {
     }
   }, [hasAnniversarry]);
   return (
-    <div>
+    <div className="bg-white">
       <Toaster />
       {loading && (
         <div className='flex justify-center items-center h-screen'>
