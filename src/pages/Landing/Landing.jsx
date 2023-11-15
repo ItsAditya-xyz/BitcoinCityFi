@@ -141,7 +141,7 @@ function Landing(props) {
     getTopKeys();
   }, []);
   return (
-    <div>
+    <div className="bg-white">
       <Toaster />
       <div className="pt-10 sm:pt-24 bg-gradient-to-r from-blue-500  to-red-400  sm:pb-10 ">
         <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center ">
