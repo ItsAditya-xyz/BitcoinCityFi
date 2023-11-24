@@ -445,18 +445,18 @@ function Address(props) {
                 </div>
               )}
 
-{tab == "token" && !loadingTokenInfo && (
+              {tab == "token" && !loadingTokenInfo && (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4">
                   <p className="">
                     <span className="font-semibold">Token Price</span>: $
-                    {Math.round(parseFloat(tokenInfo.usd_price) * 10000) / 10000}
+                    {Math.round(parseFloat(tokenInfo.usd_price) * 10000) /
+                      10000}
                   </p>
 
                   <p className="">
                     <span className="font-semibold">Token Supply</span> :{" "}
-                    {Math.round(tokenInfo.total_supply * 10) / 10}
+                    {parseFloat(tokenInfo.total_supply).toLocaleString()}
                   </p>
-                
 
                   <p>
                     <span className="font-semibold">Volume</span>:{" "}
@@ -470,6 +470,12 @@ function Address(props) {
                     {Math.round(parseFloat(tokenInfo.treasury_amount) * 10000) /
                       10000}{" "}
                     BTC{" "}
+                  </p>
+
+                  <p>
+                    <span className="font-semibold">Market Cap</span>:{" "}
+                    $ {Math.round(parseFloat(tokenInfo.usd_price) *
+                      parseFloat(tokenInfo.total_supply)).toLocaleString()}
                   </p>
                 </div>
               )}
