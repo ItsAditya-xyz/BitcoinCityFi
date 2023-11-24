@@ -50,7 +50,7 @@ function Landing(props) {
     // loop through the object topPointsVar and get the total points
     for (let i = 0; i < 500; i++) {
       totalPointsVar += parseFloat(topPointsVar[i].totalPoints);
-      if (i < 20) {
+      if (i < 10) {
         top10Farmers.push({
           name: topPointsVar[i].twitterUsername,
           points: Math.round(parseFloat(topPointsVar[i].totalPoints)),
@@ -456,7 +456,7 @@ function Landing(props) {
             <div>
               <div className="my-4">
                 <h2 className="text-xl font-bold text-gray-800 mx-2 text-center my-2">
-                  Pie Chart for Top 20 Farmers and overall points share among
+                  Pie Chart for Top 10 Farmers and overall points share among
                   Top 2000 users.
                 </h2>
                 <h3 className="text-md font-semibold text-gray-800 mx-2 text-center my-2">
